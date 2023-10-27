@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, NativeAppEventEmitter } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Replace with the desired icon library
 
+/*renders patients list screen that fetches data from an API
+and displays it in a scrollable list. Clicking a patient displays the patient details  */
 const HomeScreen = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
 
@@ -25,14 +28,16 @@ const HomeScreen = ({ navigation }) => {
     <TouchableOpacity
       style={styles.patientCard}
       onPress={() => {
-        navigation.navigate('PatientDetail', { patient: item });
+        navigation.navigate('Patient Detail', { patient: item});
       }}
     >
 
 <Icon name="user" size={30} color="#007ACC" /> 
       <View style={styles.patientInfo}>
-        <Text style={styles.patientName}>{item.firstName}</Text>
+        <Text style={styles.patientName}>{item.firstName} {item.lastName}</Text>
         <Text style={styles.patientAge}>Age: {item.age}</Text>
+        <Text style={styles.patientAge}>Contact: {item.contactNumber}</Text>
+
         {/* Add more patient details here */}
       </View>
     </TouchableOpacity>
