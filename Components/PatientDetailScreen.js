@@ -71,15 +71,33 @@ const PatientDetailScreen = ({ route }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View>
       {/* edit and delete icons */}
       <View style={styles.iconsContainer}>
+      <TouchableOpacity
+          onPress={() =>
+            /* redirect to view patient clinical data */
+            showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
+          }
+        >
+        <FontAwesome
+          name="user-md"
+          size={30}
+          color="#007ACC"
+          style={styles.icon}
+        /></TouchableOpacity>
+         <TouchableOpacity
+          onPress={() =>
+            /* redirect to edit patient clinical data */
+            showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
+          }
+        >
         <FontAwesome
           name="edit"
           size={30}
           color="#007ACC"
           style={styles.icon}
-        />
+        /></TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
             showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
@@ -89,6 +107,7 @@ const PatientDetailScreen = ({ route }) => {
         </TouchableOpacity>
       </View>
       {/*patient information  */}
+    <ScrollView>
       <View style={styles.detailCard}>
         <Text style={styles.label}>Name:</Text>
         <Text
@@ -112,7 +131,7 @@ const PatientDetailScreen = ({ route }) => {
         <Text style={styles.value}>{`${patient.address}, ${patient.city}, ${patient.province}, ${patient.postalCode}`}</Text>
       </View>
       <View style={styles.detailCard}>
-        <Text style={styles.label}>Contact Number:</Text>
+        <Text style={styles.label}>Contact:</Text>
         <Text style={styles.value}>{patient.contactNumber}</Text>
       </View>
      
@@ -130,6 +149,7 @@ const PatientDetailScreen = ({ route }) => {
       </View>
       {/* Add more patient details here */}
     </ScrollView>
+    </View>
   );
 };
 
@@ -166,7 +186,9 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    marginTop: 5,
+    marginHorizontal: 10,
+    padding: 5,
   },
 });
 
