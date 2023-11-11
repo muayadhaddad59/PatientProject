@@ -79,7 +79,7 @@ const HomeScreen = ({ navigation }) => {
 
         {/* List All Critical Patients Button */}
         <Button
-          title="List Critical Patients"
+          title="Critical Patients List"
           onPress={() => {
                 // Navigate to the CriticalPatientsScreen
                 navigation.navigate('Critical Patients');
