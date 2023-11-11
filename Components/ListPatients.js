@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'; // Replace with the de
 
 /*renders patients list screen that fetches data from an API
 and displays it in a scrollable list. Clicking a patient displays the patient details  */
-const HomeScreen = ({ navigation }) => {
+const ListPatients = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default ListPatients;
