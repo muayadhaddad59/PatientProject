@@ -31,7 +31,7 @@ const PatientDetailScreen = ({ route }) => {
   const showDeleteConfirmation = (patientName) => {
     Alert.alert(
       "Delete Record",
-      `Are you sure you want to delete the record of ${patientName}?`,
+      `Are you sure you want to delete this patient and their clinical record? ${patientName}`,
       [
         {
           text: "Cancel",
@@ -110,7 +110,7 @@ const PatientDetailScreen = ({ route }) => {
         >
           <FontAwesome
             name="edit"
-            size={30}
+            size={40}
             color="#007ACC"
             style={styles.icon}
           />
@@ -120,7 +120,7 @@ const PatientDetailScreen = ({ route }) => {
             showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
           }
         >
-          <FontAwesome name="trash" size={30} color="red" style={styles.icon} />
+          <FontAwesome name="trash" size={40} color="red" style={styles.icon} />
         </TouchableOpacity>
       </View>
       {/*patient information  */}
@@ -144,9 +144,44 @@ const PatientDetailScreen = ({ route }) => {
               label: "Name",
               value: `${patient.firstName} ${patient.lastName}`,
             },
+            { label: "Date of Birth", value: formattedDateOfBirth },
             { label: "Age", value: `${patient.age}` },
             { label: "Gender", value: `${patient.gender}` },
-            // ... (other personal info fields)
+            { label: "Height", value: `${patient.height} cm` },
+            { label: "Weight", value: `${patient.weight} kg` },
+            { label: "Address", value: patient.address },
+            { label: "City", value: patient.city },
+            { label: "Province", value: patient.province },
+            { label: "Postal Code", value: patient.postalCode },
+            { label: "Contact Number", value: patient.contactNumber },
+            { label: "Email", value: patient.email },
+            { label: "Identification", value: patient.identification },
+            { label: "Identification Type", value: patient.identificationType },
+            {
+              label: "Primary Care Physician",
+              value: patient.primaryCarePhysician,
+            },
+            {
+              label: "Physician Contact Number",
+              value: patient.physicianContactNumber,
+            },
+            { label: "List of Allergies", value: patient.listOfAllergies },
+            { label: "Current Medications", value: patient.currentMedications },
+            { label: "Medical Conditions", value: patient.medicalConditions },
+            { label: "Insurance Provider", value: patient.insuranceProvider },
+            { label: "Insurance ID Number", value: patient.insuranceIdNumber },
+            {
+              label: "Insurance Contact Number",
+              value: patient.insuranceContactNumber,
+            },
+            {
+              label: "Emergency Contact Person",
+              value: patient.emergencyContactPerson,
+            },
+            {
+              label: "Emergency Contact Number",
+              value: patient.emergencyContactNumber,
+            },
           ]}
           keyExtractor={(item) => item.label}
           renderItem={({ item }) => (
@@ -162,9 +197,15 @@ const PatientDetailScreen = ({ route }) => {
           data={clinicalData}
           keyExtractor={(item, index) => index.toString()} // Using index as a fallback key
           renderItem={({ item }) => (
-            <View style={[styles.clinicalDataCard, item.is_critical_condition ? styles.criticalCard: null]}>
-              <Text style={styles.label}>Critical Condition? {item.is_critical_condition ? 'Yes' : 'No'}
-</Text>
+            <View
+              style={[
+                styles.clinicalDataCard,
+                item.is_critical_condition ? styles.criticalCard : null,
+              ]}
+            >
+              <Text style={styles.label}>
+                Critical Condition? {item.is_critical_condition ? "Yes" : "No"}
+              </Text>
               <Text style={styles.label}>
                 Date Taken:{" "}
                 {new Date(item.updatedAt).toLocaleDateString("en-GB", {
@@ -194,7 +235,9 @@ const PatientDetailScreen = ({ route }) => {
           ListHeaderComponent={() => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Clinical Data",  {patientId: patient._id} ); // Navigate to AddClinicalData screen
+                navigation.navigate("Clinical Data", {
+                  patientId: patient._id,
+                }); // Navigate to AddClinicalData screen
               }}
             >
               <FontAwesome
@@ -256,7 +299,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   criticalCard: {
-    borderColor: 'red', // You can customize the border color for critical condition
+    borderColor: "red", // You can customize the border color for critical condition
     borderWidth: 2,
   },
 });

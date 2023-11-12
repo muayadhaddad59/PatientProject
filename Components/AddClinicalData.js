@@ -10,12 +10,14 @@ const AddClinicalData = ({ navigation, route }) => {
   const [heartRate, setHeartRate] = useState('');
   const [clinicStaff, setClinicStaff] = useState('');
 
+  //extract patientId from route parameters
   const { patientId } = route.params;
   console.log(route.params)
 
+  //save clinical data
   const saveClinicalData = async () => {
     try {
-
+      //POST request to save clinical data
       const response = await fetch(`http://localhost:3000/patients/${patientId}/clinicaldata`, {
         method: 'POST',
         headers: {
@@ -27,16 +29,18 @@ const AddClinicalData = ({ navigation, route }) => {
           respiratory_rate: respiratoryRate,
           blood_oxygen_level: bloodOxygenLevel,
           pulse_rate: heartRate,
-          //clinic_staff: clinicStaff,
+          clinic_staff: clinicStaff,
         }),
       });
-
+      
       if (response.ok) {
+        // partse the response JSON is success
         const newClinicalData = await response.json();
         Alert.alert('Record Saved', 'Clinical data record saved successfully ', [
           {
             text: 'OK',
             onPress: () => {
+              
               // Navigate back to the Clinical Data screen
               navigation.goBack();
             },
