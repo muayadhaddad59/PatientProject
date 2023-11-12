@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -6,8 +7,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Platform,
+  FlatList,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 
 /* displays more details about the patient after a user clicks on the patient name*/
 const PatientDetailScreen = ({ route }) => {
@@ -15,12 +19,14 @@ const PatientDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const dateOfBirth = new Date(patient.dateOfBirth);
   // Format the date to "YYYY - MM - DD"
-  const formattedDateOfBirth = new Intl.DateTimeFormat('en-GB', {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
+  const formattedDateOfBirth = new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
   }).format(dateOfBirth);
 
+  const [selectedSegment, setSelectedSegment] = useState(0);
+  const [clinicalData, setClinicalData] = useState([]);
   //show an alert when deleting a record
   const showDeleteConfirmation = (patientName) => {
     Alert.alert(
@@ -54,7 +60,7 @@ const PatientDetailScreen = ({ route }) => {
                     text: "OK",
                     onPress: () => {
                       //return to home screen and reload the list
-                      navigation.push('Home');
+                      navigation.push("Home");
                     },
                   },
                 ]);
@@ -70,34 +76,45 @@ const PatientDetailScreen = ({ route }) => {
     );
   };
 
+  useEffect(() => {
+    if (selectedSegment === 1) {
+      // Fetch clinical data when the Clinical Data segment is selected
+      fetchClinicalData(patient._id);
+    }
+  }, [selectedSegment, patient._id]);
+
+  const fetchClinicalData = async (patientId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/patients/${patientId}/clinicaldata`
+      );
+      if (response.ok) {
+        const clinicalData = await response.json();
+        setClinicalData(clinicalData);
+      } else {
+        console.error("Error fetching clinical data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching clinical data:", error);
+    }
+  };
   return (
-    <View>
+    <View style={styles.container}>
       {/* edit and delete icons */}
       <View style={styles.iconsContainer}>
-      <TouchableOpacity
-          onPress={() =>
-            /* redirect to view patient clinical data */
-            showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
-          }
-        >
-        <FontAwesome
-          name="user-md"
-          size={30}
-          color="#007ACC"
-          style={styles.icon}
-        /></TouchableOpacity>
-         <TouchableOpacity
+        <TouchableOpacity
           onPress={() =>
             /* redirect to edit patient clinical data */
             showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
           }
         >
-        <FontAwesome
-          name="edit"
-          size={30}
-          color="#007ACC"
-          style={styles.icon}
-        /></TouchableOpacity>
+          <FontAwesome
+            name="edit"
+            size={30}
+            color="#007ACC"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
             showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
@@ -107,48 +124,89 @@ const PatientDetailScreen = ({ route }) => {
         </TouchableOpacity>
       </View>
       {/*patient information  */}
-    <ScrollView>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Name:</Text>
-        <Text
-          style={styles.value}
-        >{`${patient.firstName} ${patient.lastName}`}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Age:</Text>
-        <Text style={styles.value}>{patient.age}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Gender:</Text>
-        <Text style={styles.value}>{patient.gender}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Date of Birth</Text>
-        <Text style={styles.value}>{formattedDateOfBirth}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Address:</Text>
-        <Text style={styles.value}>{`${patient.address}, ${patient.city}, ${patient.province}, ${patient.postalCode}`}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Contact:</Text>
-        <Text style={styles.value}>{patient.contactNumber}</Text>
-      </View>
-     
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{patient.email}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>ID Number:</Text>
-        <Text style={styles.value}>{patient.identification}</Text>
-      </View>
-      <View style={styles.detailCard}>
-        <Text style={styles.label}>ID Type:</Text>
-        <Text style={styles.value}>{patient.identificationType}</Text>
-      </View>
-      {/* Add more patient details here */}
-    </ScrollView>
+
+      {/* Add segmented control for Personal Info and Clinical Data */}
+      <SegmentedControl
+        style={styles.segmentedControl}
+        values={["Personal Info", "Clinical Data"]}
+        selectedIndex={selectedSegment}
+        onChange={(event) => {
+          setSelectedSegment(event.nativeEvent.selectedSegmentIndex);
+        }}
+      />
+
+      {/* Display content based on selected segment */}
+      {selectedSegment === 0 ? (
+        // Display Personal Info
+        <FlatList
+          data={[
+            {
+              label: "Name",
+              value: `${patient.firstName} ${patient.lastName}`,
+            },
+            { label: "Age", value: `${patient.age}` },
+            { label: "Gender", value: `${patient.gender}` },
+            // ... (other personal info fields)
+          ]}
+          keyExtractor={(item) => item.label}
+          renderItem={({ item }) => (
+            <View style={styles.detailCard}>
+              <Text style={styles.label}>{item.label}:</Text>
+              <Text style={styles.value}>{item.value}</Text>
+            </View>
+          )}
+        />
+      ) : (
+        // Display Clinical Data
+        <FlatList
+          data={clinicalData}
+          keyExtractor={(item, index) => index.toString()} // Using index as a fallback key
+          renderItem={({ item }) => (
+            <View style={[styles.clinicalDataCard, item.is_critical_condition ? styles.criticalCard: null]}>
+              <Text style={styles.label}>Critical Condition? {item.is_critical_condition ? 'Yes' : 'No'}
+</Text>
+              <Text style={styles.label}>
+                Date Taken:{" "}
+                {new Date(item.updatedAt).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </Text>
+
+              <Text style={styles.label}>
+                Blood Pressure: {item.bp_systolic} / {item.bp_diastolic}
+              </Text>
+              <Text style={styles.label}>
+                Respiratory Rate: {item.respiratory_rate}
+              </Text>
+              <Text style={styles.label}>
+                Blood Oxygen Level: {item.blood_oxygen_level}
+              </Text>
+              <Text style={styles.label}>Heart Rate: {item.pulse_rate}</Text>
+              <Text style={styles.label}>
+                Clinic Staff: {item.clinic_staff}
+              </Text>
+            </View>
+          )}
+          ListHeaderComponent={() => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Clinical Data",  {patientId: patient._id} ); // Navigate to AddClinicalData screen
+              }}
+            >
+              <FontAwesome
+                name="plus-square"
+                size={40}
+                color="#007ACC"
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </View>
   );
 };
@@ -165,23 +223,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   detailCard: {
+    flexDirection: "row", // Change flex direction to row
     backgroundColor: "white",
     padding: 15,
     marginVertical: 10,
     borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     elevation: 3,
+    justifyContent: "space-between", // Optional: Adjust the spacing between label and value
+    alignItems: "center", // Align items to center vertically
   },
   label: {
     fontSize: 16,
     fontWeight: "bold",
-    width: "30%",
+    // Optional: Add margin-right for spacing between label and value
+    marginRight: 10,
   },
   value: {
     fontSize: 16,
-    width: "70%",
   },
   iconsContainer: {
     flexDirection: "row",
@@ -189,6 +247,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginHorizontal: 10,
     padding: 5,
+  },
+  clinicalDataCard: {
+    backgroundColor: "white",
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 10,
+    elevation: 3,
+  },
+  criticalCard: {
+    borderColor: 'red', // You can customize the border color for critical condition
+    borderWidth: 2,
   },
 });
 
