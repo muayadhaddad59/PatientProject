@@ -1,66 +1,90 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import PatientDetailScreen from './PatientDetailScreen';
+import React, { useState } from "react";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import PatientDetailScreen from "./PatientDetailScreen";
 
 const AddClinicalData = ({ navigation, route }) => {
-  const [systolic, setSystolic] = useState('');
-  const [diastolic, setDiastolic] = useState('');
-  const [respiratoryRate, setRespiratoryRate] = useState('');
-  const [bloodOxygenLevel, setBloodOxygenLevel] = useState('');
-  const [heartRate, setHeartRate] = useState('');
-  const [clinicStaff, setClinicStaff] = useState('');
+  const [systolic, setSystolic] = useState("");
+  const [diastolic, setDiastolic] = useState("");
+  const [respiratoryRate, setRespiratoryRate] = useState("");
+  const [bloodOxygenLevel, setBloodOxygenLevel] = useState("");
+  const [heartRate, setHeartRate] = useState("");
+  const [clinicStaff, setClinicStaff] = useState("");
 
   //extract patientId from route parameters
   const { patientId } = route.params;
-  console.log(route.params)
+  const [clinicalData, setClinicalData] = useState([]);
+
+  console.log(route.params);
 
   //save clinical data
   const saveClinicalData = async () => {
     try {
       //POST request to save clinical data
-      const response = await fetch(`http://localhost:3000/patients/${patientId}/clinicaldata`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bp_systolic: systolic,
-          bp_diastolic: diastolic,
-          respiratory_rate: respiratoryRate,
-          blood_oxygen_level: bloodOxygenLevel,
-          pulse_rate: heartRate,
-          clinic_staff: clinicStaff,
-        }),
-      });
-      
-      if (response.ok) {
-        // partse the response JSON is success
-        const newClinicalData = await response.json();
-        Alert.alert('Record Saved', 'Clinical data record saved successfully ', [
-          {
-            text: 'OK',
-            onPress: () => {
-              
-              // Navigate back to the Clinical Data screen
-              navigation.goBack();
-            },
+      const response = await fetch(
+        `http://localhost:3000/patients/${patientId}/clinicaldata`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        ]);
+          body: JSON.stringify({
+            bp_systolic: systolic,
+            bp_diastolic: diastolic,
+            respiratory_rate: respiratoryRate,
+            blood_oxygen_level: bloodOxygenLevel,
+            pulse_rate: heartRate,
+            clinic_staff: clinicStaff,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Refetch clinical data and update the state
+        const updatedClinicalData = await fetchClinicalData(patientId);
+        setClinicalData(updatedClinicalData);
+        Alert.alert(
+          "Record Saved",
+          "Clinical data record saved successfully ",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                // Navigate back to the Clinical Data screen
+                navigation.goBack();
+              },
+            },
+          ]
+        );
       } else {
-        console.error('Error saving clinical data:', response.statusText);
-        Alert.alert('Error', 'Failed to save clinical data. Please try again.');
+        console.error("Error saving clinical data:", response.statusText);
+        Alert.alert("Error", "Failed to save clinical data. Please try again.");
       }
     } catch (error) {
-      console.error('Error saving clinical data:', error);
-      Alert.alert('Error', 'Failed to save clinical data. Please try again.');
+      console.error("Error saving clinical data:", error);
+      Alert.alert("Error", "Failed to save clinical data. Please try again.");
+    }
+  };
+  // Function to fetch clinical data after adding new clinical data
+  const fetchClinicalData = async (patientId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/patients/${patientId}/clinicaldata`
+      );
+      if (response.ok) {
+        const clinicalData = await response.json();
+        return clinicalData; // Return the fetched clinical data
+      } else {
+        console.error("Error fetching clinical data:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching clinical data:", error);
+      return [];
     }
   };
 
   return (
-    
     <View style={styles.container}>
-      <Text style={styles.label}>patiend id: ${patientId}</Text>
-      
       <Text style={styles.label}>Blood Pressure (Systolic):</Text>
       <TextInput
         style={styles.input}
@@ -106,7 +130,7 @@ const AddClinicalData = ({ navigation, route }) => {
         style={styles.input}
         value={clinicStaff}
         onChangeText={setClinicStaff}
-      /> 
+      />
 
       <Button title="Save Record" onPress={saveClinicalData} />
     </View>
@@ -120,12 +144,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     padding: 8,

@@ -128,7 +128,7 @@ const PatientDetailScreen = ({ route }) => {
       {/* Add segmented control for Personal Info and Clinical Data */}
       <SegmentedControl
         style={styles.segmentedControl}
-        values={["Personal Info", "Clinical Data"]}
+        values={["Patient Info", "Clinical Data"]}
         selectedIndex={selectedSegment}
         onChange={(event) => {
           setSelectedSegment(event.nativeEvent.selectedSegmentIndex);
@@ -145,8 +145,8 @@ const PatientDetailScreen = ({ route }) => {
               value: `${patient.firstName} ${patient.lastName}`,
             },
             { label: "Date of Birth", value: formattedDateOfBirth },
-            { label: "Age", value: `${patient.age}` },
-            { label: "Gender", value: `${patient.gender}` },
+            { label: "Age", value: patient.age },
+            { label: "Gender", value: patient.gender },
             { label: "Height", value: `${patient.height} cm` },
             { label: "Weight", value: `${patient.weight} kg` },
             { label: "Address", value: patient.address },
@@ -183,6 +183,7 @@ const PatientDetailScreen = ({ route }) => {
               value: patient.emergencyContactNumber,
             },
           ]}
+          //prop used to extract a unique key for each item in the list.
           keyExtractor={(item) => item.label}
           renderItem={({ item }) => (
             <View style={styles.detailCard}>

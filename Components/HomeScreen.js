@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+// hook is used to create state var. Patients hold patient data and search is for filtering
 const HomeScreen = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
   const [searchText, setSearchText] = useState('');
 
+  //fetch patient data from the url when the component mounts
   useEffect(() => {
     fetch('http://localhost:3000/patients')
       .then((response) => {
@@ -21,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
         console.error('Error fetching patient data:', error);
       });
   }, []);
-
+  //filter method to search using first or last name
   const filteredPatients = patients.filter(
     (patient) =>
       patient.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
