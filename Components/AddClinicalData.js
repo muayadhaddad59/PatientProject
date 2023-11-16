@@ -10,16 +10,39 @@ const AddClinicalData = ({ navigation, route }) => {
   const [heartRate, setHeartRate] = useState("");
   const [clinicStaff, setClinicStaff] = useState("");
 
+  // Function to check if any of the required fields are empty
+  const isSaveDisabled = () => {
+    return (
+      !systolic ||
+      !diastolic ||
+      !respiratoryRate ||
+      !bloodOxygenLevel ||
+      !heartRate ||
+      !clinicStaff
+    );
+  };
+
   //extract patientId from route parameters
   const { patientId } = route.params;
   const [clinicalData, setClinicalData] = useState([]);
 
   console.log(route.params);
 
-  //save clinical data
+  // Function to handle the save button press
+  // Function to handle the save button press
   const saveClinicalData = async () => {
     try {
-      //POST request to save clinical data
+      // Check if any of the required fields are empty before proceeding
+      if (isSaveDisabled()) {
+        // Display an alert or provide feedback to the user
+        Alert.alert(
+          "Incomplete Fields",
+          "Please fill in all the required fields."
+        );
+        return;
+      }
+
+      // Proceed with the POST request to save clinical data
       const response = await fetch(
         `http://localhost:3000/patients/${patientId}/clinicaldata`,
         {
@@ -39,22 +62,8 @@ const AddClinicalData = ({ navigation, route }) => {
       );
 
       if (response.ok) {
-        // Refetch clinical data and update the state
-        const updatedClinicalData = await fetchClinicalData(patientId);
-        setClinicalData(updatedClinicalData);
-        Alert.alert(
-          "Record Saved",
-          "Clinical data record saved successfully ",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                // Navigate back to the Clinical Data screen
-                navigation.goBack();
-              },
-            },
-          ]
-        );
+        // Navigate back to the PatientDetailScreen with the Clinical Data segment selected
+        navigation.goBack();
       } else {
         console.error("Error saving clinical data:", response.statusText);
         Alert.alert("Error", "Failed to save clinical data. Please try again.");
@@ -64,6 +73,7 @@ const AddClinicalData = ({ navigation, route }) => {
       Alert.alert("Error", "Failed to save clinical data. Please try again.");
     }
   };
+
   // Function to fetch clinical data after adding new clinical data
   const fetchClinicalData = async (patientId) => {
     try {
