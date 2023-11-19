@@ -11,6 +11,8 @@ import CriticalPatients from "./Components/CriticalPatients";
 import AddClinicalData from "./Components/AddClinicalData";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import the icon library
 import AddPatient from "./Components/AddPatient";
+import EditPatient from "./Components/EditPatient";
+
 
 //create stack and bottom nav
 const Stack = createStackNavigator();
@@ -23,6 +25,7 @@ function HomeStack() {
       <Stack.Screen name="Dashboard" component={HomeScreen} />
       <Stack.Screen name="List Patients" component={ListPatients} />
       <Stack.Screen name="Add Patient" component={AddPatient} />
+      <Stack.Screen name="Edit Patient" component={EditPatient} />
       <Stack.Screen name="Patient Detail" component={PatientDetailScreen} />
       <Stack.Screen name="Critical Patients" component={CriticalPatients} />
       <Stack.Screen name="Clinical Data" component={AddClinicalData} />

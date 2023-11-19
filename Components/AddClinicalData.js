@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import PatientDetailScreen from "./PatientDetailScreen";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-const AddClinicalData = ({ navigation, route }) => {
+const AddClinicalData = ({ route }) => {
   const [systolic, setSystolic] = useState("");
   const [diastolic, setDiastolic] = useState("");
   const [respiratoryRate, setRespiratoryRate] = useState("");
   const [bloodOxygenLevel, setBloodOxygenLevel] = useState("");
   const [heartRate, setHeartRate] = useState("");
   const [clinicStaff, setClinicStaff] = useState("");
+  const [clinicalData, setClinicalData] = useState([]);
 
   // Function to check if any of the required fields are empty
   const isSaveDisabled = () => {
@@ -23,11 +25,29 @@ const AddClinicalData = ({ navigation, route }) => {
   };
 
   //extract patientId from route parameters
-  const { patientId } = route.params;
-  const [clinicalData, setClinicalData] = useState([]);
+  const { patientId, patient } = route.params;
+  const navigation = useNavigation();
 
   console.log(route.params);
 
+  // Function to fetch clinical data after adding new clinical data
+  const fetchClinicalData = async (patientId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/patients/${patientId}/clinicaldata`
+      );
+      if (response.ok) {
+        const clinicalData = await response.json();
+        return clinicalData; // Return the fetched clinical data
+      } else {
+        console.error("Error fetching clinical data:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching clinical data:", error);
+      return [];
+    }
+  };
   // Function to handle the save button press
   const saveClinicalData = async () => {
     try {
@@ -61,8 +81,30 @@ const AddClinicalData = ({ navigation, route }) => {
       );
 
       if (response.ok) {
-        // Navigate to previous screen
-        navigation.goBack();
+        // Display success message
+        Alert.alert("Success", "Clinical data added successfully!", [
+          {
+            text: "OK",
+            onPress: async () => {
+              // Fetch clinical data after adding new clinical data
+              const updatedClinicalData = await fetchClinicalData(patientId);
+
+              // Update the state with the fetched clinical data
+              setClinicalData(updatedClinicalData);
+
+              // Navigate to PatientDetailScreen with patientInfo segmented control selected
+              // 
+              // navigation.push("Patient Detail", {
+              //   params: {
+              //     patient: patient,
+              //   },
+              // });
+
+            navigation.goBack();
+            console.log (patientId, patient)
+            },
+          },
+        ]);
       } else {
         console.error("Error saving clinical data:", response.statusText);
         Alert.alert("Error", "Failed to save clinical data. Please try again.");
@@ -70,25 +112,6 @@ const AddClinicalData = ({ navigation, route }) => {
     } catch (error) {
       console.error("Error saving clinical data:", error);
       Alert.alert("Error", "Failed to save clinical data. Please try again.");
-    }
-  };
-
-  // Function to fetch clinical data after adding new clinical data
-  const fetchClinicalData = async (patientId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/patients/${patientId}/clinicaldata`
-      );
-      if (response.ok) {
-        const clinicalData = await response.json();
-        return clinicalData; // Return the fetched clinical data
-      } else {
-        console.error("Error fetching clinical data:", response.statusText);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching clinical data:", error);
-      return [];
     }
   };
 

@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
-import { personalInformationFields, medicalInformationFields, insuranceInformationFields } from "./patientFields";
 
 const AddPatient = () => {
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
 
   const [patientData, setPatientData] = useState({
     // Personal Information
@@ -41,14 +40,15 @@ const AddPatient = () => {
     return Object.values(patientData).some((field) => !field);
   };
 
-  const savePatient = async () => {
+  const 
+  savePatient = async () => {
     try {
       if (isSaveDisabled()) {
         Alert.alert("Incomplete Fields", "Please fill in all the required fields.");
         return;
       }
 
-      // Simulate saving patient data (replace this with your actual fetch logic)
+      // save patient data
       const response = await fetch("http://localhost:3000/patients", {
         method: "POST",
         headers: {

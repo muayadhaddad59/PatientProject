@@ -17,6 +17,14 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 const PatientDetailScreen = ({ route }) => {
   const { patient } = route.params;
   const navigation = useNavigation();
+/* 
+  // Check if patient is defined before accessing its properties
+  if (!patient) {
+    // Handle the case where patient is undefined
+    console.error("Patient is undefined.");
+    // You might want to show an error message or navigate back.
+    return null; // or navigate back to the previous screen
+  } */
   const dateOfBirth = new Date(patient.dateOfBirth);
   // Format the date to "YYYY - MM - DD"
   const formattedDateOfBirth = new Intl.DateTimeFormat("en-GB", {
@@ -26,7 +34,22 @@ const PatientDetailScreen = ({ route }) => {
   }).format(dateOfBirth);
 
   const [selectedSegment, setSelectedSegment] = useState(0);
-  const [clinicalData, setClinicalData] = useState([]);
+  const [clinicalData, setClinicalData] = useState([]); //clinical data
+  const [refreshClinicalData, setRefreshClinicalData] = useState(false);
+
+  //trigger refresh when adding clinical data
+  const handleRefreshClinicalData = () => {
+    setRefreshClinicalData((prev) => !prev);
+  };
+
+  const handleAddClinicalData = async () => {
+    // Navigate to AddClinicalData screen
+    navigation.navigate("Clinical Data", {
+      patientId: patient._id,
+      patient: patient
+    });
+  };
+
   //show an alert when deleting a record
   const showDeleteConfirmation = (patientName) => {
     Alert.alert(
@@ -60,7 +83,7 @@ const PatientDetailScreen = ({ route }) => {
                     text: "OK",
                     onPress: () => {
                       //return to home screen and reload the list
-                      navigation.push("Home");
+                      navigation.push("Dashboard");
                     },
                   },
                 ]);
@@ -81,7 +104,7 @@ const PatientDetailScreen = ({ route }) => {
       // Fetch clinical data when the Clinical Data segment is selected
       fetchClinicalData(patient._id);
     }
-  }, [selectedSegment, patient._id]);
+  }, [selectedSegment, patient._id, refreshClinicalData]);
 
   const fetchClinicalData = async (patientId) => {
     try {
@@ -98,15 +121,18 @@ const PatientDetailScreen = ({ route }) => {
       console.error("Error fetching clinical data:", error);
     }
   };
+ 
   return (
     <View style={styles.container}>
       {/* edit and delete icons */}
       <View style={styles.iconsContainer}>
         <TouchableOpacity
-          onPress={() =>
             /* redirect to edit patient clinical data */
-            showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
-          }
+            onPress={() => {
+              navigation.navigate("Edit Patient", {
+                patientId: patient._id,
+              }); 
+            }}
         >
           <FontAwesome
             name="edit"
@@ -144,7 +170,7 @@ const PatientDetailScreen = ({ route }) => {
               label: "Name",
               value: `${patient.firstName} ${patient.lastName}`,
             },
-            { label: "Date of Birth", value: formattedDateOfBirth },
+            { label: "Date of Birth", value: patient.dateOfBirth },
             { label: "Age", value: patient.age },
             { label: "Gender", value: patient.gender },
             { label: "Height", value: `${patient.height} cm` },
@@ -233,6 +259,7 @@ const PatientDetailScreen = ({ route }) => {
               </Text>
             </View>
           )}
+          //plus icon to add new clinical data
           ListHeaderComponent={() => (
             <TouchableOpacity
               onPress={() => {
@@ -240,6 +267,7 @@ const PatientDetailScreen = ({ route }) => {
                   patientId: patient._id,
                 }); // Navigate to AddClinicalData screen
               }}
+              
             >
               <FontAwesome
                 name="plus-square"
@@ -249,6 +277,7 @@ const PatientDetailScreen = ({ route }) => {
               />
             </TouchableOpacity>
           )}
+         
         />
       )}
     </View>
