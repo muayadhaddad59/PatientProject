@@ -75,7 +75,7 @@ const HomeScreen = ({ navigation }) => {
           title="Add New Patient"
           onPress={() => {
             // Navigate to the screen where you add a new patient
-            navigation.navigate('AddPatient');
+            navigation.navigate('Add Patient');
           }}
         />
 

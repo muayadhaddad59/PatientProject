@@ -9,6 +9,8 @@ import PatientDetailScreen from "./Components/PatientDetailScreen";
 import HomeScreen from "./Components/HomeScreen";
 import CriticalPatients from "./Components/CriticalPatients";
 import AddClinicalData from "./Components/AddClinicalData";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import the icon library
+import AddPatient from "./Components/AddPatient";
 
 //create stack and bottom nav
 const Stack = createStackNavigator();
@@ -18,8 +20,9 @@ const Tab = createBottomTabNavigator();
 function HomeStack() {
   return (
     <Stack.Navigator initialRouteName="HomeScreen">
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Dashboard" component={HomeScreen} />
       <Stack.Screen name="List Patients" component={ListPatients} />
+      <Stack.Screen name="Add Patient" component={AddPatient} />
       <Stack.Screen name="Patient Detail" component={PatientDetailScreen} />
       <Stack.Screen name="Critical Patients" component={CriticalPatients} />
       <Stack.Screen name="Clinical Data" component={AddClinicalData} />
@@ -31,14 +34,51 @@ function HomeStack() {
 export default function App() {
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#007ACC" barStyle="light-content" />
       <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeStack} />
-          <Tab.Screen name="List Patients" component={ListPatients} />
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              let iconName;
+
+              if (route.name === "Home") {
+                iconName = "home";
+              } else if (route.name === "List Patients") {
+                iconName = "format-list-bulleted";
+              } else if (route.name === "Critical Patients") {
+                iconName = "alert-circle";
+              }
+
+              return (
+                <MaterialCommunityIcons name={iconName} color={color} size={size} />
+              );
+            },
+          })}
+          tabBarStyle={{
+            backgroundColor: "#F5FCFF", // Background color of the tab bar
+          }}
+          tabBarActiveTintColor="#007ACC" // Color when tab is active
+          tabBarInactiveTintColor="gray" // Color when tab is inactive
+        >
+          <Tab.Screen
+            name="Home"
+            component={HomeStack}
+            options={{
+              animationEnabled: true, // Enable animation for this screen
+            }}
+          />
+          <Tab.Screen
+            name="List Patients"
+            component={ListPatients}
+            options={{
+              animationEnabled: true, // Enable animation for this screen
+            }}
+          />
           <Tab.Screen
             name="Critical Patients"
             component={CriticalPatients}
+            options={{
+              animationEnabled: true, // Enable animation for this screen
+            }}
           />
         </Tab.Navigator>
       </NavigationContainer>

@@ -29,7 +29,6 @@ const AddClinicalData = ({ navigation, route }) => {
   console.log(route.params);
 
   // Function to handle the save button press
-  // Function to handle the save button press
   const saveClinicalData = async () => {
     try {
       // Check if any of the required fields are empty before proceeding
@@ -62,7 +61,7 @@ const AddClinicalData = ({ navigation, route }) => {
       );
 
       if (response.ok) {
-        // Navigate back to the PatientDetailScreen with the Clinical Data segment selected
+        // Navigate to previous screen
         navigation.goBack();
       } else {
         console.error("Error saving clinical data:", response.statusText);
@@ -151,6 +150,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#F5FCFF", // Background color for the entire screen
   },
   label: {
     fontSize: 16,
