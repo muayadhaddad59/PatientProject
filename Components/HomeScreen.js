@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Button } from 'react-native-paper';
+
 
 // hook is used to create state var. Patients hold patient data and search is for filtering
 const HomeScreen = ({ navigation }) => {
@@ -70,25 +72,30 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Buttons */}
       <View style={styles.buttonsContainer}>
-        {/* Add New Patient Button */}
-        <Button
-          title="Add New Patient"
-          onPress={() => {
-            // Navigate to the screen where you add a new patient
-            navigation.navigate('Add Patient');
-          }}
-        />
+      {/* Add New Patient Button */}
+      <Button
+        mode="contained"
+        onPress={() => {
+          // Navigate to the screen where you add a new patient
+          navigation.navigate('Add Patient');
+        }}
+        style={[styles.button, { backgroundColor: '#0066ff' }]}
+        >
+        Add Patient
+      </Button>
 
-        {/* List All Critical Patients Button */}
-        <Button
-          title="Critical Patients List"
-          onPress={() => {
-                // Navigate to the CriticalPatientsScreen
-                navigation.navigate('Critical Patients');
-              }
-          }
-        />
-      </View>
+      {/* List All Critical Patients Button */}
+      <Button
+        mode="contained"
+        onPress={() => {
+          // Navigate to the CriticalPatientsScreen
+          navigation.navigate('Critical Patients');
+        }}
+        style={[styles.button, { backgroundColor: '#f6546a' }]}
+        >
+        Critical List
+      </Button>
+    </View>
 
       {/* Patient List */}
       <FlatList
@@ -150,6 +157,15 @@ const styles = StyleSheet.create({
   patientAge: {
     color: '#888',
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 20,
+    },
+    button: {
+      width: 150,
+    },
+  
 });
 
 export default HomeScreen;

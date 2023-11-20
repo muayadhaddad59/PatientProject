@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from "react-native";
+import { Button } from 'react-native-paper';
+
 
 const EditPatientScreen = ({ route, navigation }) => {
     const { patientId } = route.params;
@@ -52,13 +54,11 @@ const EditPatientScreen = ({ route, navigation }) => {
   }, [patientId]);
 
   const fetchPatient = async (patientId) => {
-    // Implement your API call to fetch patient details based on patientId
-    // Replace the placeholder URL and headers with your actual API details
+    // fetch patient details based on patientId
     const response = await fetch(`http://localhost:3000/patients/${patientId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // Add any other headers needed for authentication or other purposes
       },
     });
 
@@ -74,10 +74,9 @@ const EditPatientScreen = ({ route, navigation }) => {
     try {
       // Perform API call to update patient details in the backend
       const response = await fetch(`http://localhost:3000/patients/${patientId}`, {
-        method: 'PUT', // Use the appropriate HTTP method for updating data
+        method: 'PUT', 
         headers: {
           'Content-Type': 'application/json',
-          // Add any other headers needed for authentication or other purposes
         },
         body: JSON.stringify(editedPatient),
       });
@@ -96,13 +95,15 @@ const EditPatientScreen = ({ route, navigation }) => {
     }
   };
 
-
+  //generate the input fields
+  /* onChangeText={(value) => setEditedPatient({ ...editedPatient, age: value })}: 
+  Defines a callback function that gets called when the user changes the text in the input field. 
+  It updates the age property of the editedPatient state with the new value. */
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
         {/* Display existing patient details for editing */}
         <Text style={styles.sectionHeader}>Edit Patient Details:</Text>
-
         {/* Personal Information */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>First Name:</Text>
@@ -289,7 +290,7 @@ const EditPatientScreen = ({ route, navigation }) => {
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Medical Conditions:</Text>
           <TextInput
-            style={styles.input}
+            style={styles.inputTall}
             placeholder="Medical Conditions"
             value={editedPatient.medicalConditions}
             onChangeText={(value) => setEditedPatient({ ...editedPatient, medicalConditions: value })}
@@ -351,7 +352,10 @@ const EditPatientScreen = ({ route, navigation }) => {
         </View>
 
         {/* Save button */}
-        <Button title="Save" onPress={handleSave} />
+        <Button 
+        mode="contained"
+        onPress={handleSave}
+        style={[styles.button, { backgroundColor: '#66ccff', alignSelf: 'center' }]}>Save </Button>
       </View>
     </ScrollView>
   );
@@ -384,6 +388,21 @@ const styles = StyleSheet.create({
       marginTop: 4,
       padding: 8,
     },
+    inputTall: {
+        height: 60,
+        borderColor: "gray",
+        borderWidth: 1,
+        marginTop: 4,
+        padding: 8,
+      },
+      buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: 20,
+        },
+        button: {
+          width: 150,
+        },
   });
   
 

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+import { Button } from 'react-native-paper';
+
 
 const AddPatient = () => {
   //const navigation = useNavigation();
@@ -274,7 +276,7 @@ const AddPatient = () => {
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Medical Conditions:</Text>
           <TextInput
-            style={styles.input}
+            style={styles.inputTall}
             value={patientData.medicalConditions}
             onChangeText={(value) => handleInputChange("medicalConditions", value)}
           />
@@ -330,7 +332,10 @@ const AddPatient = () => {
         </View>
 
         {/* Save Button */}
-        <Button title="Save Patient" onPress={savePatient} disabled={isSaveDisabled()} />
+        <Button 
+        mode="contained"
+        onPress={savePatient} disabled={isSaveDisabled()}
+        style={[styles.button, { backgroundColor: '#66ccff', alignSelf: 'center' }]}>Save </Button>
       </View>
     </ScrollView>
   );
@@ -364,6 +369,21 @@ const styles = StyleSheet.create({
     marginTop: 4,
     padding: 8,
   },
+  inputTall: {
+    height: 60,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 4,
+    padding: 8,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 20,
+    },
+    button: {
+      width: 150,
+    },
 });
 
 export default AddPatient;

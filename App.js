@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 // Define a function for the Home stack navigator
 function HomeStack() {
   return (
-    <Stack.Navigator initialRouteName="HomeScreen">
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Dashboard" component={HomeScreen} />
       <Stack.Screen name="List Patients" component={ListPatients} />
       <Stack.Screen name="Add Patient" component={AddPatient} />
