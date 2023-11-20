@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Button } from 'react-native-paper';
-
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Button } from "react-native-paper";
 
 // hook is used to create state var. Patients hold patient data and search is for filtering
 const HomeScreen = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   //fetch patient data from the url when the component mounts
   useEffect(() => {
     //pc ip address: 192.168.2.154:8081 / localhost: 127.0.0.1:3000
-    fetch('http://127.0.0.1:3000/patients')
+    fetch("http://127.0.0.1:3000/patients")
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         return response.json();
       })
@@ -23,7 +29,7 @@ const HomeScreen = ({ navigation }) => {
         setPatients(data);
       })
       .catch((error) => {
-        console.error('Error fetching patient data:', error);
+        console.error("Error fetching patient data:", error);
       });
   }, []);
   //filter method to search using first or last name
@@ -32,17 +38,21 @@ const HomeScreen = ({ navigation }) => {
       patient.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
       patient.lastName.toLowerCase().includes(searchText.toLowerCase())
   );
-
+  /*   function that renders a touchable patient card. When the card is pressed,
+   it navigates to the "Patient Detail" screen with the selected patient's data.
+    The card displays the patient's name, age, and contact number */
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.patientCard}
       onPress={() => {
-        navigation.navigate('Patient Detail', { patient: item });
+        navigation.navigate("Patient Detail", { patient: item });
       }}
     >
-      <Icon name="user" size={30} color="#007ACC" />
+      <Icon name="user-circle" size={30} color="#007ACC" />
       <View style={styles.patientInfo}>
-        <Text style={styles.patientName}>{item.firstName} {item.lastName}</Text>
+        <Text style={styles.patientName}>
+          {item.firstName} {item.lastName}
+        </Text>
         <Text style={styles.patientAge}>Age: {item.age}</Text>
         <Text style={styles.patientContact}>Contact: {item.contactNumber}</Text>
       </View>
@@ -51,6 +61,11 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <Icon name="vcard" size={30} color="#007ACC" />
+        <Text style={styles.headerText}>Welcome, Clinic Staff!</Text>
+      </View>
       {/* Search Bar with Clear Icon */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -64,7 +79,7 @@ const HomeScreen = ({ navigation }) => {
         {searchText.length > 0 && (
           <TouchableOpacity
             style={styles.clearIcon}
-            onPress={() => setSearchText('')}
+            onPress={() => setSearchText("")}
           >
             <Icon name="times-circle" size={20} color="#999" />
           </TouchableOpacity>
@@ -73,30 +88,30 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Buttons */}
       <View style={styles.buttonsContainer}>
-      {/* Add New Patient Button */}
-      <Button
-        mode="contained"
-        onPress={() => {
-          // Navigate to the screen where you add a new patient
-          navigation.navigate('Add Patient');
-        }}
-        style={[styles.button, { backgroundColor: '#0066ff' }]}
+        {/* Add New Patient Button */}
+        <Button
+          mode="contained"
+          onPress={() => {
+            // Navigate to the screen where you add a new patient
+            navigation.navigate("Add Patient");
+          }}
+          style={[styles.button, { backgroundColor: "#0066ff" }]}
         >
-        Add Patient
-      </Button>
+          Add Patient
+        </Button>
 
-      {/* List All Critical Patients Button */}
-      <Button
-        mode="contained"
-        onPress={() => {
-          // Navigate to the CriticalPatientsScreen
-          navigation.navigate('Critical Patients');
-        }}
-        style={[styles.button, { backgroundColor: '#f6546a' }]}
+        {/* List All Critical Patients Button */}
+        <Button
+          mode="contained"
+          onPress={() => {
+            // Navigate to the CriticalPatientsScreen
+            navigation.navigate("Critical Patients");
+          }}
+          style={[styles.button, { backgroundColor: "#f6546a" }]}
         >
-        Critical List
-      </Button>
-    </View>
+          Critical List
+        </Button>
+      </View>
 
       {/* Patient List */}
       <FlatList
@@ -112,16 +127,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
+  },
+  headerContainer: {
+    flexDirection: 'row', // Align children horizontally
+    alignItems: "left",
+    marginBottom: 20,
+  },
+  headerText: {
+    marginLeft: 10, // Add some space between the icon and text
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#006699",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   searchInput: {
     flex: 1,
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -131,17 +157,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
   patientCard: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 15,
     margin: 10,
     borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     elevation: 3,
   },
   patientInfo: {
@@ -153,20 +179,19 @@ const styles = StyleSheet.create({
   },
   patientName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   patientAge: {
-    color: '#888',
+    color: "#888",
   },
   buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginVertical: 20,
-    },
-    button: {
-      width: 150,
-    },
-  
+  },
+  button: {
+    width: 150,
+  },
 });
 
 export default HomeScreen;
