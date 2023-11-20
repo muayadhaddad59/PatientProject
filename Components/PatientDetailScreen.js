@@ -136,6 +136,7 @@ const PatientDetailScreen = ({ route }) => {
           }
         >
           <FontAwesome name="trash" size={40} color="red" style={styles.icon} />
+          
         </TouchableOpacity>
       </View>
       {/*patient information  */}
@@ -250,20 +251,33 @@ const PatientDetailScreen = ({ route }) => {
           )}
           //plus icon to add new clinical data
           ListHeaderComponent={() => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Clinical Data", {
-                  patientId: patient._id,
-                }); // Navigate to AddClinicalData screen
-              }}
-            >
-              <FontAwesome
-                name="plus-square"
-                size={40}
-                color="#007ACC"
-                style={styles.icon}
-              />
-            </TouchableOpacity>
+            <View style={styles.headerContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Clinical Data", {
+                      patientId: patient._id,
+                    }); // Navigate to AddClinicalData screen
+                  }}
+                >
+                  <FontAwesome
+                    name="plus-square"
+                    size={40}
+                    color="#007ACC"
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleRefreshClinicalData}
+                  style={styles.iconsContainer}
+                >
+                  <FontAwesome
+                    name="refresh"
+                    size={30}
+                    color="#007ACC"
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+            </View>
           )}
         />
       )}
@@ -300,6 +314,13 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
+  },
+  headerContainer: {
+    flexDirection: "row", // Align items horizontally
+    justifyContent: "space-between", // Put space between items
+    alignItems: "center", // Center items vertically
+    paddingHorizontal: 16, // Add horizontal padding for spacing
+    marginBottom: 16, // Add bottom margin for spacing
   },
   iconsContainer: {
     flexDirection: "row",
