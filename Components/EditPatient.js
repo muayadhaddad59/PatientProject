@@ -477,6 +477,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 4,
     padding: 8,
+    backgroundColor: "#FFFFFF", // Background color
+
   },
   inputTall: {
     height: 60,
@@ -484,6 +486,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 4,
     padding: 8,
+    backgroundColor: "#FFFFFF", // Background color
+
   },
   buttonsContainer: {
     flexDirection: "row",

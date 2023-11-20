@@ -90,7 +90,7 @@ const PatientDetailScreen = ({ route }) => {
 
   useEffect(() => {
     if (selectedSegment === 1) {
-      // Fetch clinical data when the Clinical Data segment is selected
+      // Fetch clinical data when the Clinical Data segment (1) is selected
       fetchClinicalData(patient._id);
     }
   }, [selectedSegment, patient._id, refreshClinicalData]);
@@ -113,10 +113,10 @@ const PatientDetailScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      {/* edit and delete icons */}
+      {/* icons */}
       <View style={styles.iconsContainer}>
+        {/* Edit icon to edit Patient Info */}
         <TouchableOpacity
-          /* redirect to edit patient clinical data */
           onPress={() => {
             navigation.navigate("Edit Patient", {
               patientId: patient._id,
@@ -126,17 +126,41 @@ const PatientDetailScreen = ({ route }) => {
           <FontAwesome
             name="edit"
             size={40}
+            color="#66CC33"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        {/* Plus icon to add Clinical Data */}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Clinical Data", {
+              patientId: patient._id,
+            });
+          }}
+        >
+          <FontAwesome
+            name="plus-square"
+            size={40}
             color="#007ACC"
             style={styles.icon}
           />
         </TouchableOpacity>
+        {/* Refresh icon to refresh and update clinical data */}
+        <TouchableOpacity onPress={handleRefreshClinicalData}>
+          <FontAwesome
+            name="refresh"
+            size={40}
+            color="#0099FF"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        {/* Delete icon to delete patient record */}
         <TouchableOpacity
           onPress={() =>
             showDeleteConfirmation(`${patient.firstName} ${patient.lastName}`)
           }
         >
           <FontAwesome name="trash" size={40} color="red" style={styles.icon} />
-          
         </TouchableOpacity>
       </View>
       {/*patient information  */}
@@ -249,36 +273,7 @@ const PatientDetailScreen = ({ route }) => {
               </Text>
             </View>
           )}
-          //plus icon to add new clinical data
-          ListHeaderComponent={() => (
-            <View style={styles.headerContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Clinical Data", {
-                      patientId: patient._id,
-                    }); // Navigate to AddClinicalData screen
-                  }}
-                >
-                  <FontAwesome
-                    name="plus-square"
-                    size={40}
-                    color="#007ACC"
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleRefreshClinicalData}
-                  style={styles.iconsContainer}
-                >
-                  <FontAwesome
-                    name="refresh"
-                    size={30}
-                    color="#007ACC"
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-            </View>
-          )}
+ 
         />
       )}
     </View>
@@ -325,8 +320,7 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     padding: 5,
   },
   clinicalDataCard: {
@@ -337,7 +331,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   criticalCard: {
-    borderColor: "red", // You can customize the border color for critical condition
+    borderColor: "red",
     borderWidth: 2,
   },
 });

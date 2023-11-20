@@ -417,6 +417,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderColor: "gray",
+    backgroundColor: "#FFFFFF", // Background color
     borderWidth: 1,
     marginTop: 4,
     padding: 8,
@@ -427,6 +428,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 4,
     padding: 8,
+    backgroundColor: "#FFFFFF", // Background color
+
   },
   buttonsContainer: {
     flexDirection: "row",
