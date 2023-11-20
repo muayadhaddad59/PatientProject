@@ -1,45 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from "react-native";
-import { Button } from 'react-native-paper';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
+import { Button } from "react-native-paper";
+import { format } from "date-fns";  // Import the date-fns library for date formatting
 
 
 const EditPatientScreen = ({ route, navigation }) => {
-    const { patientId } = route.params;
-  
-    const [editedPatient, setEditedPatient] = useState({
-      // Personal Information
-      firstName: "",
-      lastName: "",
-      dateOfBirth: "",
-      age: "",
-      gender: "",
-      address: "",
-      city: "",
-      province: "",
-      postalCode: "",
-      contactNumber: "",
-      email: "",
-      identification: "",
-      identificationType: "",
-  
-      // Medical Information
-      purposeOfVisit: "",
-      primaryCarePhysician: "",
-      physicianContactNumber: "",
-      listOfAllergies: "",
-      currentMedications: "",
-      medicalConditions: "",
-  
-      // Insurance Information
-      insuranceProvider: "",
-      insuranceIdNumber: "",
-      insuranceContactNumber: "",
-  
-      // Emergency Contact
-      emergencyContactPerson: "",
-      emergencyContactNumber: "",
-    });
-  
+  const { patientId } = route.params;
+  // Function to format the date in a consistent way
+  const formatDate = (date) => {
+    return date ? format(new Date(date), "yyyy-MM-dd") : ""; // Adjust the date format as needed
+  };
+
+  const [editedPatient, setEditedPatient] = useState({
+    // Personal Information
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    age: "",
+    gender: "",
+    address: "",
+    city: "",
+    province: "",
+    postalCode: "",
+    contactNumber: "",
+    email: "",
+    identification: "",
+    identificationType: "",
+
+    // Medical Information
+    purposeOfVisit: "",
+    primaryCarePhysician: "",
+    physicianContactNumber: "",
+    listOfAllergies: "",
+    currentMedications: "",
+    medicalConditions: "",
+
+    // Insurance Information
+    insuranceProvider: "",
+    insuranceIdNumber: "",
+    insuranceContactNumber: "",
+
+    // Emergency Contact
+    emergencyContactPerson: "",
+    emergencyContactNumber: "",
+  });
 
   useEffect(() => {
     // Fetch existing patient data from the API
@@ -48,19 +59,22 @@ const EditPatientScreen = ({ route, navigation }) => {
         setEditedPatient(patientData);
       })
       .catch((error) => {
-        console.error('Error fetching patient data:', error);
+        console.error("Error fetching patient data:", error);
         setIsLoading(false);
       });
   }, [patientId]);
 
   const fetchPatient = async (patientId) => {
     // fetch patient details based on patientId
-    const response = await fetch(`http://localhost:3000/patients/${patientId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `http://localhost:3000/patients/${patientId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.ok) {
       const patientData = await response.json();
@@ -73,25 +87,33 @@ const EditPatientScreen = ({ route, navigation }) => {
   const handleSave = async () => {
     try {
       // Perform API call to update patient details in the backend
-      const response = await fetch(`http://localhost:3000/patients/${patientId}`, {
-        method: 'PUT', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editedPatient),
-      });
+      const response = await fetch(
+        `http://localhost:3000/patients/${patientId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editedPatient),
+        }
+      );
 
       if (response.ok) {
         // Display success message
-        Alert.alert('Success', 'Patient details updated successfully!');
+        Alert.alert("Success", "Patient details updated successfully!");
         // Navigate back to PatientDetailScreen with updated data
-        navigation.navigate('Patient Detail', { patient: editedPatient });
+        navigation.navigate("Patient Detail", { patient: editedPatient });
       } else {
-        throw new Error(`Error updating patient details: ${response.statusText}`);
+        throw new Error(
+          `Error updating patient details: ${response.statusText}`
+        );
       }
     } catch (error) {
-      console.error('Error updating patient details:', error);
-      Alert.alert('Error', 'Failed to update patient details. Please try again.');
+      console.error("Error updating patient details:", error);
+      Alert.alert(
+        "Error",
+        "Failed to update patient details. Please try again."
+      );
     }
   };
 
@@ -111,7 +133,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="First Name"
             value={editedPatient.firstName}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, firstName: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, firstName: value })
+            }
           />
         </View>
 
@@ -121,7 +145,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Last Name"
             value={editedPatient.lastName}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, lastName: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, lastName: value })
+            }
           />
         </View>
 
@@ -130,8 +156,9 @@ const EditPatientScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Date of Birth"
-            value={editedPatient.dateOfBirth}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, dateOfBirth: value })}
+            value={formatDate(editedPatient.dateOfBirth)}
+            onChangeText={(value) => setEditedPatient({ ...editedPatient, dateOfBirth: value })
+            }
           />
         </View>
 
@@ -141,7 +168,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Age"
             value={editedPatient.age.toString()}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, age: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, age: value })
+            }
           />
         </View>
 
@@ -151,7 +180,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Gender"
             value={editedPatient.gender}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, gender: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, gender: value })
+            }
           />
         </View>
 
@@ -161,7 +192,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Address"
             value={editedPatient.address}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, address: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, address: value })
+            }
           />
         </View>
 
@@ -171,7 +204,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="City"
             value={editedPatient.city}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, city: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, city: value })
+            }
           />
         </View>
 
@@ -181,7 +216,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Province"
             value={editedPatient.province}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, province: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, province: value })
+            }
           />
         </View>
 
@@ -191,7 +228,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Postal Code"
             value={editedPatient.postalCode}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, postalCode: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, postalCode: value })
+            }
           />
         </View>
 
@@ -201,7 +240,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Contact Number"
             value={editedPatient.contactNumber}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, contactNumber: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, contactNumber: value })
+            }
           />
         </View>
 
@@ -211,7 +252,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Email"
             value={editedPatient.email}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, email: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, email: value })
+            }
           />
         </View>
 
@@ -221,7 +264,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Identification #"
             value={editedPatient.identification}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, identification: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, identification: value })
+            }
           />
         </View>
 
@@ -231,7 +276,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Identification Type"
             value={editedPatient.identificationType}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, identificationType: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, identificationType: value })
+            }
           />
         </View>
 
@@ -243,7 +290,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Purpose of Visit"
             value={editedPatient.purposeOfVisit}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, purposeOfVisit: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, purposeOfVisit: value })
+            }
           />
         </View>
 
@@ -253,7 +302,12 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Primary Care Physician"
             value={editedPatient.primaryCarePhysician}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, primaryCarePhysician: value })}
+            onChangeText={(value) =>
+              setEditedPatient({
+                ...editedPatient,
+                primaryCarePhysician: value,
+              })
+            }
           />
         </View>
 
@@ -263,7 +317,12 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Physician Contact Number"
             value={editedPatient.physicianContactNumber}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, physicianContactNumber: value })}
+            onChangeText={(value) =>
+              setEditedPatient({
+                ...editedPatient,
+                physicianContactNumber: value,
+              })
+            }
           />
         </View>
 
@@ -273,7 +332,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="List of Allergies"
             value={editedPatient.listOfAllergies}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, listOfAllergies: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, listOfAllergies: value })
+            }
           />
         </View>
 
@@ -283,7 +344,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Current Medications"
             value={editedPatient.currentMedications}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, currentMedications: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, currentMedications: value })
+            }
           />
         </View>
 
@@ -293,7 +356,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.inputTall}
             placeholder="Medical Conditions"
             value={editedPatient.medicalConditions}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, medicalConditions: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, medicalConditions: value })
+            }
           />
         </View>
 
@@ -305,7 +370,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Insurance Provider"
             value={editedPatient.insuranceProvider}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, insuranceProvider: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, insuranceProvider: value })
+            }
           />
         </View>
 
@@ -315,7 +382,9 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Insurance ID Number"
             value={editedPatient.insuranceIdNumber}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, insuranceIdNumber: value })}
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, insuranceIdNumber: value })
+            }
           />
         </View>
 
@@ -325,7 +394,12 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Insurance Contact Number"
             value={editedPatient.insuranceContactNumber}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, insuranceContactNumber: value })}
+            onChangeText={(value) =>
+              setEditedPatient({
+                ...editedPatient,
+                insuranceContactNumber: value,
+              })
+            }
           />
         </View>
 
@@ -337,7 +411,12 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Emergency Contact Person"
             value={editedPatient.emergencyContactPerson}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, emergencyContactPerson: value })}
+            onChangeText={(value) =>
+              setEditedPatient({
+                ...editedPatient,
+                emergencyContactPerson: value,
+              })
+            }
           />
         </View>
 
@@ -347,63 +426,73 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Emergency Contact Number"
             value={editedPatient.emergencyContactNumber}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, emergencyContactNumber: value })}
+            onChangeText={(value) =>
+              setEditedPatient({
+                ...editedPatient,
+                emergencyContactNumber: value,
+              })
+            }
           />
         </View>
 
         {/* Save button */}
-        <Button 
-        mode="contained"
-        onPress={handleSave}
-        style={[styles.button, { backgroundColor: '#66ccff', alignSelf: 'center' }]}>Save </Button>
+        <Button
+          mode="contained"
+          onPress={handleSave}
+          style={[
+            styles.button,
+            { backgroundColor: "#66ccff", alignSelf: "center" },
+          ]}
+        >
+          Save{" "}
+        </Button>
       </View>
     </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-    scrollViewContainer: {
-      flexGrow: 1,
-    },
-    container: {
-      padding: 16,
-      backgroundColor: "#F5FCFF", // Background color for the entire screen
-    },
-    sectionHeader: {
-      fontSize: 18,
-      fontWeight: "bold",
-      marginTop: 16,
-      marginBottom: 5,
-    },
-    fieldContainer: {
-      marginBottom: 16,
-    },
-    label: {
-      fontSize: 16,
-      fontWeight: "bold",
-    },
-    input: {
-      height: 40,
-      borderColor: "gray",
-      borderWidth: 1,
-      marginTop: 4,
-      padding: 8,
-    },
-    inputTall: {
-        height: 60,
-        borderColor: "gray",
-        borderWidth: 1,
-        marginTop: 4,
-        padding: 8,
-      },
-      buttonsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginVertical: 20,
-        },
-        button: {
-          width: 150,
-        },
-  });
-  
+  scrollViewContainer: {
+    flexGrow: 1,
+  },
+  container: {
+    padding: 16,
+    backgroundColor: "#F5FCFF", // Background color for the entire screen
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 16,
+    marginBottom: 5,
+  },
+  fieldContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 4,
+    padding: 8,
+  },
+  inputTall: {
+    height: 60,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 4,
+    padding: 8,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 20,
+  },
+  button: {
+    width: 150,
+  },
+});
 
 export default EditPatientScreen;

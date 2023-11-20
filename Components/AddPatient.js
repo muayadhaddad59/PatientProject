@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Alert, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
-import { Button } from 'react-native-paper';
+import { Button } from "react-native-paper";
+import { format } from 'date-fns';  // Import the date-fns library for date formatting
 
 
 const AddPatient = () => {
-  //const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const [patientData, setPatientData] = useState({
     // Personal Information
@@ -42,13 +50,26 @@ const AddPatient = () => {
     return Object.values(patientData).some((field) => !field);
   };
 
-  const 
-  savePatient = async () => {
+  const savePatient = async () => {
     try {
       if (isSaveDisabled()) {
-        Alert.alert("Incomplete Fields", "Please fill in all the required fields.");
+        Alert.alert(
+          "Incomplete Fields",
+          "Please fill in all the required fields."
+        );
         return;
       }
+      // Format the date of birth using date-fns
+      const formattedDateOfBirth = format(
+        new Date(patientData.dateOfBirth),
+        "yyyy-MM-dd"
+      );
+
+      // Include the formatted date of birth in the patientData
+      const updatedPatientData = {
+        ...patientData,
+        dateOfBirth: formattedDateOfBirth,
+      };
 
       // save patient data
       const response = await fetch("http://localhost:3000/patients", {
@@ -60,6 +81,7 @@ const AddPatient = () => {
       });
 
       if (response.ok) {
+        Alert.alert("Success", "Patient details saved successfully!");
         // Successfully added a patient, navigate to the Patient Detail screen
         const savedPatient = await response.json();
         navigation.navigate("Patient Detail", { patient: savedPatient });
@@ -80,8 +102,6 @@ const AddPatient = () => {
     }));
   };
 
-  
-  
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
@@ -109,7 +129,7 @@ const AddPatient = () => {
           <Text style={styles.label}>Date of Birth:</Text>
           <TextInput
             style={styles.input}
-            placeholder="YYYY MM DD"
+            placeholder="YYYY-MM-DD"
             value={patientData.dateOfBirth}
             onChangeText={(value) => handleInputChange("dateOfBirth", value)}
           />
@@ -129,6 +149,7 @@ const AddPatient = () => {
           <Text style={styles.label}>Gender:</Text>
           <TextInput
             style={styles.input}
+            placeholder="Male, Female, Other Gender"
             value={patientData.gender}
             onChangeText={(value) => handleInputChange("gender", value)}
           />
@@ -138,6 +159,7 @@ const AddPatient = () => {
           <Text style={styles.label}>Height:</Text>
           <TextInput
             style={styles.input}
+            placeholder="in cm"
             value={patientData.height}
             onChangeText={(value) => handleInputChange("height", value)}
             keyboardType="numeric"
@@ -148,6 +170,7 @@ const AddPatient = () => {
           <Text style={styles.label}>Weight:</Text>
           <TextInput
             style={styles.input}
+            placeholder="in kg"
             value={patientData.weight}
             onChangeText={(value) => handleInputChange("weight", value)}
             keyboardType="numeric"
@@ -222,7 +245,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.identificationType}
-            onChangeText={(value) => handleInputChange("identificationType", value)}
+            onChangeText={(value) =>
+              handleInputChange("identificationType", value)
+            }
           />
         </View>
 
@@ -242,7 +267,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.primaryCarePhysician}
-            onChangeText={(value) => handleInputChange("primaryCarePhysician", value)}
+            onChangeText={(value) =>
+              handleInputChange("primaryCarePhysician", value)
+            }
           />
         </View>
 
@@ -251,7 +278,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.physicianContactNumber}
-            onChangeText={(value) => handleInputChange("physicianContactNumber", value)}
+            onChangeText={(value) =>
+              handleInputChange("physicianContactNumber", value)
+            }
           />
         </View>
 
@@ -260,7 +289,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.listOfAllergies}
-            onChangeText={(value) => handleInputChange("listOfAllergies", value)}
+            onChangeText={(value) =>
+              handleInputChange("listOfAllergies", value)
+            }
           />
         </View>
 
@@ -269,7 +300,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.currentMedications}
-            onChangeText={(value) => handleInputChange("currentMedications", value)}
+            onChangeText={(value) =>
+              handleInputChange("currentMedications", value)
+            }
           />
         </View>
 
@@ -278,7 +311,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.inputTall}
             value={patientData.medicalConditions}
-            onChangeText={(value) => handleInputChange("medicalConditions", value)}
+            onChangeText={(value) =>
+              handleInputChange("medicalConditions", value)
+            }
           />
         </View>
 
@@ -289,7 +324,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.insuranceProvider}
-            onChangeText={(value) => handleInputChange("insuranceProvider", value)}
+            onChangeText={(value) =>
+              handleInputChange("insuranceProvider", value)
+            }
           />
         </View>
 
@@ -298,7 +335,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.insuranceIdNumber}
-            onChangeText={(value) => handleInputChange("insuranceIdNumber", value)}
+            onChangeText={(value) =>
+              handleInputChange("insuranceIdNumber", value)
+            }
           />
         </View>
 
@@ -307,7 +346,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.insuranceContactNumber}
-            onChangeText={(value) => handleInputChange("insuranceContactNumber", value)}
+            onChangeText={(value) =>
+              handleInputChange("insuranceContactNumber", value)
+            }
           />
         </View>
 
@@ -318,7 +359,9 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.emergencyContactPerson}
-            onChangeText={(value) => handleInputChange("emergencyContactPerson", value)}
+            onChangeText={(value) =>
+              handleInputChange("emergencyContactPerson", value)
+            }
           />
         </View>
 
@@ -327,15 +370,24 @@ const AddPatient = () => {
           <TextInput
             style={styles.input}
             value={patientData.emergencyContactNumber}
-            onChangeText={(value) => handleInputChange("emergencyContactNumber", value)}
+            onChangeText={(value) =>
+              handleInputChange("emergencyContactNumber", value)
+            }
           />
         </View>
 
         {/* Save Button */}
-        <Button 
-        mode="contained"
-        onPress={savePatient} disabled={isSaveDisabled()}
-        style={[styles.button, { backgroundColor: '#66ccff', alignSelf: 'center' }]}>Save </Button>
+        <Button
+          mode="contained"
+          onPress={savePatient}
+          disabled={isSaveDisabled()}
+          style={[
+            styles.button,
+            { backgroundColor: "#66ccff", alignSelf: "center" },
+          ]}
+        >
+          Save{" "}
+        </Button>
       </View>
     </ScrollView>
   );
@@ -377,13 +429,13 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginVertical: 20,
-    },
-    button: {
-      width: 150,
-    },
+  },
+  button: {
+    width: 150,
+  },
 });
 
 export default AddPatient;

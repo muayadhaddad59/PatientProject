@@ -12,26 +12,15 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { format } from "date-fns"; // Import the date-fns library for date formatting
 
 /* displays more details about the patient after a user clicks on the patient name*/
 const PatientDetailScreen = ({ route }) => {
   const { patient } = route.params;
   const navigation = useNavigation();
-/* 
-  // Check if patient is defined before accessing its properties
-  if (!patient) {
-    // Handle the case where patient is undefined
-    console.error("Patient is undefined.");
-    // You might want to show an error message or navigate back.
-    return null; // or navigate back to the previous screen
-  } */
+  // Format the date using date-fns
   const dateOfBirth = new Date(patient.dateOfBirth);
-  // Format the date to "YYYY - MM - DD"
-  const formattedDateOfBirth = new Intl.DateTimeFormat("en-GB", {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-  }).format(dateOfBirth);
+  const formattedDateOfBirth = format(dateOfBirth, "yyyy - MM - dd");
 
   const [selectedSegment, setSelectedSegment] = useState(0);
   const [clinicalData, setClinicalData] = useState([]); //clinical data
@@ -46,7 +35,7 @@ const PatientDetailScreen = ({ route }) => {
     // Navigate to AddClinicalData screen
     navigation.navigate("Clinical Data", {
       patientId: patient._id,
-      patient: patient
+      patient: patient,
     });
   };
 
@@ -121,18 +110,18 @@ const PatientDetailScreen = ({ route }) => {
       console.error("Error fetching clinical data:", error);
     }
   };
- 
+
   return (
     <View style={styles.container}>
       {/* edit and delete icons */}
       <View style={styles.iconsContainer}>
         <TouchableOpacity
-            /* redirect to edit patient clinical data */
-            onPress={() => {
-              navigation.navigate("Edit Patient", {
-                patientId: patient._id,
-              }); 
-            }}
+          /* redirect to edit patient clinical data */
+          onPress={() => {
+            navigation.navigate("Edit Patient", {
+              patientId: patient._id,
+            });
+          }}
         >
           <FontAwesome
             name="edit"
@@ -170,7 +159,7 @@ const PatientDetailScreen = ({ route }) => {
               label: "Name",
               value: `${patient.firstName} ${patient.lastName}`,
             },
-            { label: "Date of Birth", value: patient.dateOfBirth },
+            { label: "Date of Birth", value: formattedDateOfBirth }, // Use formattedDateOfBirth here
             { label: "Age", value: patient.age },
             { label: "Gender", value: patient.gender },
             { label: "Height", value: `${patient.height} cm` },
@@ -267,7 +256,6 @@ const PatientDetailScreen = ({ route }) => {
                   patientId: patient._id,
                 }); // Navigate to AddClinicalData screen
               }}
-              
             >
               <FontAwesome
                 name="plus-square"
@@ -277,7 +265,6 @@ const PatientDetailScreen = ({ route }) => {
               />
             </TouchableOpacity>
           )}
-         
         />
       )}
     </View>
