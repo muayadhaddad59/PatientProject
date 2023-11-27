@@ -175,6 +175,12 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#F5FCFF", // Background color for the entire screen
   },
+  container_beside: {
+    flex: 1,
+    flexDirection: 'row', // Display items horizontally
+    justifyContent: 'space-around', // You can adjust this property to change the space between fields
+    paddingHorizontal: 16,
+  },
   label: {
     fontSize: 16,
     fontWeight: "bold",

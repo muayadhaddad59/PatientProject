@@ -180,7 +180,10 @@ const PatientDetailScreen = ({ route }) => {
         // Display Personal Info
         <FlatList
           data={[
+            /* Personal Information */
+
             {
+              section: "Personal Information",
               label: "Name",
               value: `${patient.firstName} ${patient.lastName}`,
             },
@@ -197,7 +200,9 @@ const PatientDetailScreen = ({ route }) => {
             { label: "Email", value: patient.email },
             { label: "Identification", value: patient.identification },
             { label: "Identification Type", value: patient.identificationType },
+            /* Medical Information */
             {
+              section: "Medical Information",
               label: "Primary Care Physician",
               value: patient.primaryCarePhysician,
             },
@@ -208,13 +213,23 @@ const PatientDetailScreen = ({ route }) => {
             { label: "List of Allergies", value: patient.listOfAllergies },
             { label: "Current Medications", value: patient.currentMedications },
             { label: "Medical Conditions", value: patient.medicalConditions },
-            { label: "Insurance Provider", value: patient.insuranceProvider },
+
+            /* Insurance Information */
+            {
+              section: "Insurance Information",
+              label: "Insurance Provider",
+              value: patient.insuranceProvider,
+            },
             { label: "Insurance ID Number", value: patient.insuranceIdNumber },
             {
               label: "Insurance Contact Number",
               value: patient.insuranceContactNumber,
             },
+            /* Emergency Contact Information */
+
             {
+              section: "Emergency Contact",
+
               label: "Emergency Contact Person",
               value: patient.emergencyContactPerson,
             },
@@ -229,6 +244,12 @@ const PatientDetailScreen = ({ route }) => {
             <View style={styles.detailCard}>
               <Text style={styles.label}>{item.label}:</Text>
               <Text style={styles.value}>{item.value}</Text>
+            </View>
+          )}
+          // Render section headers
+          renderSectionHeader={({ section }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionHeaderText}>{section}</Text>
             </View>
           )}
         />
@@ -273,7 +294,6 @@ const PatientDetailScreen = ({ route }) => {
               </Text>
             </View>
           )}
- 
         />
       )}
     </View>
@@ -333,6 +353,14 @@ const styles = StyleSheet.create({
   criticalCard: {
     borderColor: "red",
     borderWidth: 2,
+  },
+  sectionHeader: {
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+  },
+
+  sectionHeaderText: {
+    fontWeight: 'bold',
   },
 });
 
