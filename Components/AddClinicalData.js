@@ -24,6 +24,11 @@ const AddClinicalData = ({ route }) => {
     );
   };
 
+  // Helper function to check if a value is numeric
+  const isNumeric = (value) => {
+    return /^\d+$/.test(value);
+  };
+
   //extract patientId from route parameters
   const { patientId, patient } = route.params;
   const navigation = useNavigation();
@@ -92,16 +97,9 @@ const AddClinicalData = ({ route }) => {
               // Update the state with the fetched clinical data
               setClinicalData(updatedClinicalData);
 
-              // Navigate to PatientDetailScreen with patientInfo segmented control selected
-              // 
-              // navigation.push("Patient Detail", {
-              //   params: {
-              //     patient: patient,
-              //   },
-              // });
 
-            navigation.goBack();
-            console.log (patientId, patient)
+              navigation.goBack();
+              console.log(patientId, patient);
             },
           },
         ]);
@@ -177,8 +175,8 @@ const styles = StyleSheet.create({
   },
   container_beside: {
     flex: 1,
-    flexDirection: 'row', // Display items horizontally
-    justifyContent: 'space-around', // You can adjust this property to change the space between fields
+    flexDirection: "row", // Display items horizontally
+    justifyContent: "space-around", // You can adjust this property to change the space between fields
     paddingHorizontal: 16,
   },
   label: {
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
     backgroundColor: "#FFFFFF", // Background color
-
   },
 });
 

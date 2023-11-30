@@ -10,11 +10,15 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "react-native-paper";
-import { format } from 'date-fns';  // Import the date-fns library for date formatting
-
+import { format } from "date-fns"; // Import the date-fns library for date formatting
 
 const AddPatient = () => {
   const navigation = useNavigation();
+  // Regular expressions for validation
+  const nameRegex = /^[a-zA-Z]+$/;
+  const phoneRegex = /^[0-9]{10}$/; // Assuming a 10-digit phone number
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const dateOfBirthRegex = /^\d{4}-\d{2}-\d{2}$/;
 
   const [patientData, setPatientData] = useState({
     // Personal Information
@@ -45,17 +49,51 @@ const AddPatient = () => {
     insuranceIdNumber: "",
     insuranceContactNumber: "",
   });
+  // Function to check if the data matches the expected format
+  const isValidFormat = (field, value) => {
+    switch (field) {
+      case "firstName":
+      case "lastName":
+      case "city":
+      case "province":
+      case "identificationType":
+      case "purposeOfVisit":
+      case "primaryCarePhysician":
+      case "listOfAllergies":
+      case "currentMedications":
+      case "emergencyContactPerson":
+        return nameRegex.test(value);
+      case "contactNumber":
+      case "physicianContactNumber":
+      case "insuranceContactNumber":
+      case "emergencyContactNumber":
+        return phoneRegex.test(value);
+      case "email":
+        return emailRegex.test(value);
+      case "dateOfBirth":
+        return dateOfBirthRegex.test(value);
+      default:
+        return true; // No validation for other fields
+    }
+  };
 
   const isSaveDisabled = () => {
     return Object.values(patientData).some((field) => !field);
-  };
+      };
 
   const savePatient = async () => {
     try {
-      if (isSaveDisabled()) {
+      // Check for incomplete or invalid fields
+      const invalidFields = Object.entries(patientData).filter(
+        ([field, value]) => !value || !isValidFormat(field, value)
+      );
+
+      if (invalidFields.length > 0) {
         Alert.alert(
-          "Incomplete Fields",
-          "Please fill in all the required fields."
+          "Invalid Fields",
+          `Please check the following fields:\n${invalidFields
+            .map(([field]) => field)
+            .join("\n")}`
         );
         return;
       }
@@ -77,11 +115,12 @@ const AddPatient = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(updatedPatientData),
       });
 
       if (response.ok) {
         Alert.alert("Success", "Patient details saved successfully!");
+
         // Successfully added a patient, navigate to the Patient Detail screen
         const savedPatient = await response.json();
         navigation.navigate("Patient Detail", { patient: savedPatient });
@@ -429,7 +468,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     padding: 8,
     backgroundColor: "#FFFFFF", // Background color
-
   },
   buttonsContainer: {
     flexDirection: "row",

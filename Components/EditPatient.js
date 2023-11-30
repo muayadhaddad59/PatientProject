@@ -8,8 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Button } from "react-native-paper";
-import { format } from "date-fns";  // Import the date-fns library for date formatting
-
+import { format } from "date-fns"; // Import the date-fns library for date formatting
 
 const EditPatientScreen = ({ route, navigation }) => {
   const { patientId } = route.params;
@@ -85,6 +84,20 @@ const EditPatientScreen = ({ route, navigation }) => {
   };
 
   const handleSave = async () => {
+    // Check for empty fields
+    const emptyFields = Object.entries(editedPatient).filter(
+      ([field, value]) => {
+        return typeof value === "string" && value.trim() === "";
+      }
+    );
+
+    if (emptyFields.length > 0) {
+      Alert.alert(
+        "Empty Fields",
+        "All fields are required. Please fill in all the fields."
+      );
+      return;
+    }
     try {
       // Perform API call to update patient details in the backend
       const response = await fetch(
@@ -118,9 +131,6 @@ const EditPatientScreen = ({ route, navigation }) => {
   };
 
   //generate the input fields
-  /* onChangeText={(value) => setEditedPatient({ ...editedPatient, age: value })}: 
-  Defines a callback function that gets called when the user changes the text in the input field. 
-  It updates the age property of the editedPatient state with the new value. */
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
@@ -157,7 +167,8 @@ const EditPatientScreen = ({ route, navigation }) => {
             style={styles.input}
             placeholder="Date of Birth"
             value={formatDate(editedPatient.dateOfBirth)}
-            onChangeText={(value) => setEditedPatient({ ...editedPatient, dateOfBirth: value })
+            onChangeText={(value) =>
+              setEditedPatient({ ...editedPatient, dateOfBirth: value })
             }
           />
         </View>
@@ -478,7 +489,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     padding: 8,
     backgroundColor: "#FFFFFF", // Background color
-
   },
   inputTall: {
     height: 60,
@@ -487,7 +497,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     padding: 8,
     backgroundColor: "#FFFFFF", // Background color
-
   },
   buttonsContainer: {
     flexDirection: "row",
