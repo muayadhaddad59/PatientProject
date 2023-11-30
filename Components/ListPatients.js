@@ -24,20 +24,22 @@ const ListPatients = ({ navigation }) => {
       });
   }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <TouchableOpacity
       style={styles.patientCard}
       onPress={() => {
         navigation.navigate('Patient Detail', { patient: item});
+
       }}
+      testID={`patient-card-${index}`} // Add testID with a unique identifier
+
     >
 
 <Icon name="user" size={30} color="#007ACC" /> 
       <View style={styles.patientInfo}>
-        <Text style={styles.patientName}>{item.firstName} {item.lastName}</Text>
-        <Text style={styles.patientAge}>Age: {item.age}</Text>
-        <Text style={styles.patientAge}>Contact: {item.contactNumber}</Text>
-
+      <Text testID={`patient-name-${index}`} style={styles.patientName}>{item.firstName} {item.lastName}</Text>
+        <Text testID={`patient-age-${index}`} style={styles.patientAge}>Age: {item.age}</Text>
+        <Text testID={`patient-contact-${index}`} style={styles.patientContact}>Contact: {item.contactNumber}</Text>
         {/* Add more patient details here */}
       </View>
     </TouchableOpacity>
@@ -85,6 +87,9 @@ const styles = StyleSheet.create({
   },
   patientAge: {
     color: '#888',
+  },
+  patientContact: {
+    color: "#007ACC",
   },
 });
 
