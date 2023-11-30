@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import ListPatients from './Components/ListPatients';
+import ListPatients from '../Components/ListPatients';
 
-//tests rendering
+// Test suite for the ListPatients component
 describe('ListPatients', () => {
   it('renders patient cards', async () => {
     const { getByTestId } = render(<ListPatients />);
