@@ -17,8 +17,8 @@ const HomeScreen = ({ navigation }) => {
 
   //fetch patient data from the url when the component mounts
   useEffect(() => {
-    //pc ip address: 192.168.2.154:8081 / localhost: 127.0.0.1:3000
-    fetch("http://127.0.0.1:3000/patients")
+    //pc ip address: 192.168.2.154:8081 / localhost:3000 / http://10.0.2.2:3000/ (alias to the loopback address of the host machine. works for android and ios)
+    fetch('http://localhost:3000/patients')
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
