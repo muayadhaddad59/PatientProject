@@ -38,6 +38,23 @@ const HomeScreen = ({ navigation }) => {
       patient.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
       patient.lastName.toLowerCase().includes(searchText.toLowerCase())
   );
+  //refresh data
+  const handleRefresh = () => {
+    fetch('http://localhost:3000/patients')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPatients(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching patient data:", error);
+      });
+  };
+
   /*   function that renders a touchable patient card. When the card is pressed,
    it navigates to the "Patient Detail" screen with the selected patient's data.
     The card displays the patient's name, age, and contact number */
@@ -99,6 +116,7 @@ const HomeScreen = ({ navigation }) => {
         >
           Add Patient
         </Button>
+        
 
         {/* List All Critical Patients Button */}
         <Button
@@ -111,6 +129,10 @@ const HomeScreen = ({ navigation }) => {
         >
           Critical List
         </Button>
+        {/* Refresh Button */}
+      <TouchableOpacity onPress={handleRefresh}>
+        <Icon name="refresh" size={40} color="#007ACC" />
+      </TouchableOpacity>
       </View>
 
       {/* Patient List */}
@@ -192,6 +214,7 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
   },
+  
 });
 
 export default HomeScreen;
