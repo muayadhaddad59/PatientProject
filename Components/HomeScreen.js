@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
         console.error("Error fetching patient data:", error);
       });
   }, []);
-  //filter method to search using first or last name
+  //UFilter method to search using first or last name
   const filteredPatients = patients.filter(
     (patient) =>
       patient.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -117,7 +117,6 @@ const HomeScreen = ({ navigation }) => {
           Add Patient
         </Button>
         
-
         {/* List All Critical Patients Button */}
         <Button
           mode="contained"

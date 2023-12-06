@@ -14,7 +14,10 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { format } from "date-fns"; // Import the date-fns library for date formatting
 
-/* displays more details about the patient after a user clicks on the patient name*/
+/** 
+ * displays more details about the patient after a user clicks on the patient name
+ * has 2 segmented controls for patient details and clinical data 
+ * */ 
 const PatientDetailScreen = ({ route }) => {
   const { patient } = route.params;
   const navigation = useNavigation();
@@ -254,7 +257,7 @@ const PatientDetailScreen = ({ route }) => {
           )}
         />
       ) : (
-        // Display Clinical Data
+        // Display Clinical Data, there is a red border for records that classifies the patient in critical condition
         <FlatList
           data={clinicalData}
           keyExtractor={(item, index) => index.toString()} // Using index as a fallback key
@@ -262,6 +265,7 @@ const PatientDetailScreen = ({ route }) => {
             <View
               style={[
                 styles.clinicalDataCard,
+                //If item.is_critical_condition is true, it applies the red border on the clinical data
                 item.is_critical_condition ? styles.criticalCard : null,
               ]}
             >

@@ -3,8 +3,10 @@ import {useFocusEffect} from '@react-navigation/native';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, NativeAppEventEmitter } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Replace with the desired icon library
 
-/*renders patients list screen that fetches data from an API
-and displays it in a scrollable list. Clicking a patient displays the patient details  */
+/** renders patients list screen that fetches data from an API
+and displays it in a scrollable list.
+Clicking a patient displays the patient details  */
+ 
 const ListPatients = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
 

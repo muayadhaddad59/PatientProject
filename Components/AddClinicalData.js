@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   container_beside: {
     flex: 1,
     flexDirection: "row", // Display items horizontally
-    justifyContent: "space-around", // You can adjust this property to change the space between fields
+    justifyContent: "space-around", // adjust this property to change the space between fields
     paddingHorizontal: 16,
   },
   label: {
