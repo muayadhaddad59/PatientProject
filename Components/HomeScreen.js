@@ -12,6 +12,7 @@ import { Button } from "react-native-paper";
 
 // hook is used to create state var. Patients hold patient data and search is for filtering
 const HomeScreen = ({ navigation }) => {
+  // State variables using the useState hook
   const [patients, setPatients] = useState([]);
   const [searchText, setSearchText] = useState("");
 

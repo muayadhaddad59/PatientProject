@@ -24,9 +24,9 @@ const AddClinicalData = ({ route }) => {
     );
   };
 
-  // Helper function to check if a value is numeric
+  // Helper function to check if a value is numeric and limited to 3 digits
   const isNumeric = (value) => {
-    return /^\d+$/.test(value);
+    return /^\d{1,3}$/.test(value);
   };
 
   //extract patientId from route parameters
@@ -56,12 +56,20 @@ const AddClinicalData = ({ route }) => {
   // Function to handle the save button press
   const saveClinicalData = async () => {
     try {
-      // Check if any of the required fields are empty before proceeding
-      if (isSaveDisabled()) {
+      // Check if any of the required fields are empty
+      //or not valid 3 digits
+      if (
+        isSaveDisabled() ||
+        !isNumeric(systolic) ||
+        !isNumeric(diastolic) ||
+        !isNumeric(respiratoryRate) ||
+        !isNumeric(bloodOxygenLevel) ||
+        !isNumeric(heartRate)
+      ) {
         // Display an alert or provide feedback to the user
         Alert.alert(
-          "Incomplete Fields",
-          "Please fill in all the required fields."
+          "Invalid Input ",
+          "Please check that there are no invalid entries or empty fields."
         );
         return;
       }
@@ -96,7 +104,6 @@ const AddClinicalData = ({ route }) => {
 
               // Update the state with the fetched clinical data
               setClinicalData(updatedClinicalData);
-
 
               navigation.goBack();
               console.log(patientId, patient);
